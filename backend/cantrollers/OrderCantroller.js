@@ -64,19 +64,19 @@ const confirmOrder = async (req, res) => {
 
         // // Save to the database
         // Create a new Order document
-        const newOrder = new Order({
-            username: "dummyUsername", // Replace with the actual username logic
-            order: formatResponse.orders,
-            finalPrice,
-        });
+        // const newOrder = new Order({
+        //     username: "dummyUsername", // Replace with the actual username logic
+        //     order: formatResponse.orders,
+        //     finalPrice,
+        // });
 
-        // Save the newOrder document to the database
-        const savedOrder = await newOrder.save();
+        // // Save the newOrder document to the database
+        // const savedOrder = await newOrder.save();
 
-        console.log("Saved order details:", savedOrder);
+        // console.log("Saved order details:", savedOrder);
 
         // , savedOrder
-        res.status(200).json({ response:formatResponse, finalPrice });
+        res.status(200).json({ response:{formatResponse, finalPrice} });
 
     } catch (error) {
         console.log(error);
