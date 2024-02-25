@@ -100,6 +100,7 @@ const confirmOrder = async (req, res) => {
     }
 }
 
+//After extra chat, not able to get the send the right message for completion.
 const chatOrder = async (req, res) => {
 
     const { userPrompt } = req.body;
