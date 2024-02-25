@@ -36,10 +36,21 @@ const openai = new OpenAI({
     apiKey: process.env.OPEN_AI_KEY,
 });
 
+const getAllOrders = async (req, res) => {
+    const { username } = req.query;
 
+    try {
+        const orders = await Order.find({ username });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 const confirmOrder = async (req, res) => {
-    const { orderStatement } = req.body;
+    const { orderStatement, username } = req.body;
 
     try {
         const prompt = ChatPromptTemplate.fromMessages([
@@ -57,26 +68,31 @@ const confirmOrder = async (req, res) => {
         const formatResponse = JSON.parse(response);
         // console.log(formatResponse.orders);
 
-        //Calculate the final price
-        const finalPrice =  formatResponse.orders.reduce((total, item) => {
+        // Calculate the final price
+        const finalPrice = formatResponse.orders.reduce((total, item) => {
+            // Check if price is a string and contains a '$', then remove it
+            const price = typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price;
             return total + (item.price * item.quantity)
         }, 0);
 
-        // // Save to the database
+        // Save to the database
         // Create a new Order document
-        // const newOrder = new Order({
-        //     username: "dummyUsername", // Replace with the actual username logic
-        //     order: formatResponse.orders,
-        //     finalPrice,
-        // });
+        const newOrder = new Order({
+            username: username, // Replace with the actual username logic
+            order: formatResponse.orders,
+            finalPrice,
+        });
 
-        // // Save the newOrder document to the database
-        // const savedOrder = await newOrder.save();
 
-        // console.log("Saved order details:", savedOrder);
+        console.log("Orders,", formatResponse);
 
-        // , savedOrder
-        res.status(200).json({ response:{formatResponse, finalPrice} });
+        // Save the newOrder document to the database
+        const savedOrder = await newOrder.save();
+
+        console.log("Saved order details:", savedOrder);
+
+        // , savedOrder  , finalPrice
+        res.status(200).json({ response: { formatResponse }, finalPrice });
 
     } catch (error) {
         console.log(error);
@@ -122,6 +138,8 @@ const chatOrder = async (req, res) => {
             // Chain creation
             const llmChain = prompt.pipe(chatModel).pipe(outputParser);
             const response = await llmChain.invoke({ input: userPrompt });
+            // Empty the conversation
+            history = [];
             console.log(status)
             res.status(200).json({ response, status });
         }
@@ -156,5 +174,5 @@ const chatOrder = async (req, res) => {
 
 
 module.exports = {
-    confirmOrder, chatOrder
+    confirmOrder, chatOrder, getAllOrders
 }
