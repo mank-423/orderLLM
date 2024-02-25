@@ -1,0 +1,20 @@
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 12px; /* Set the width of the scrollbar */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #ffA500; /* Set the color of the thumb (the draggable part) to orange */
+    border-radius: 6px; /* Set the border radius of the thumb */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: #333; /* Set the color of the track (the non-draggable part) to gray or black */
+  }
+  
+  /* For Firefox */
+  * {
+    scrollbar-color: #ffA500 #333;
+    scrollbar-width: thin;
+  }
+  
