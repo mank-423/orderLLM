@@ -1,5 +1,5 @@
 import { useState, FormEvent, useEffect } from "react";
-import Identicon from 'react-identicons'
+import Identicon from 'react-identicons';
 import { useNavigate } from "react-router-dom";
 import { auth } from '../../firebase/firebaseConfig';
 import logo from '../../assets/Images/logoCircle.png'
@@ -32,6 +32,8 @@ const ChatSection: React.FC = () => {
   const [allOrders, setAllOrders] = useState<any[] | null>(null);
   const [showChat, setShowChat] = useState<boolean>(false);
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [selectedOrderIndex, setSelectedOrderIndex] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   let navigate = useNavigate();
 
@@ -61,12 +63,12 @@ const ChatSection: React.FC = () => {
 
     if (result.status === 'end') {
       const confirm = window.confirm("Are you sure to confirm the order?")
-      if (confirm){
+      if (confirm) {
         handleOrderConfirm();
-      }else{
+      } else {
         alert("Order cancelled!")
       }
-      
+
     }
   };
 
@@ -105,6 +107,54 @@ const ChatSection: React.FC = () => {
     }
   };
 
+  const handleOrderSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedIndex = e.target.value;
+    // Perform actions based on the selected index, such as displaying details of the selected order
+    console.log("Selected Order Index:", selectedIndex);
+  };
+
+
+  // Function to open the modal
+  const openModal = (index: number) => {
+    setSelectedOrderIndex(index);
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setSelectedOrderIndex(null);
+    setIsModalOpen(false);
+  };
+
+  // Render the modal content
+  // Render the modal content
+  const renderModalContent = () => {
+    if (selectedOrderIndex !== null && allOrders && allOrders[selectedOrderIndex]) {
+      const selectedOrder = allOrders[selectedOrderIndex];
+
+      return (
+        <div className="bg-white p-2 rounded-lg">
+          <h2 className="text-xl font-bold mb-2">Order Details</h2>
+          <p className="text-lg font-semibold">Order {selectedOrderIndex + 1}</p>
+          <ul className="divide-y divide-gray-300">
+            {selectedOrder.order.map((item: any, itemIndex: number) => (
+              <li key={itemIndex} className="py-2">
+                <p className="text-base font-semibold">{`Item ${itemIndex + 1}: ${item.item}`}</p>
+                <p className="text-base">Quantity: {item.quantity}</p>
+                <p className="text-base">Price: {item.price}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xl font-semibold mt-4">Final Price: {selectedOrder.finalPrice}</p>
+          {/* Close button */}
+          <button onClick={closeModal} className="bg-orange-400 text-white w-full px-4 py-2 rounded-lg mt-4">Close</button>
+        </div>
+      );
+    }
+    return null;
+  };
+
+
   const getAllOrders = async () => {
     try {
       const response = await fetch(`http://localhost:8000/api/generate/allOrders?username=${user.email}`, {
@@ -134,26 +184,29 @@ const ChatSection: React.FC = () => {
   return (
     <section className=" min-h-screen">
 
-      <div className="grid grid-cols-5 bg-[#211f1f] min-h-screen p-10">
+      <div className="lg:grid lg:grid-cols-5 md:grid md:grid-cols-5 bg-[#211f1f] min-h-screen lg:p-10 md:p-10">
         {/* First Div (Orange) - Now takes 1 part */}
-        <div className="col-span-1 p-4 flex flex-col items-center">
+        <div className="lg:col-span-1 md:col-span-1 lg:p-4 p-1 flex lg:flex-col md:flex-col items-center gap-3">
           {/* Inner div with data */}
           <div className="">
             <div className="rounded-full bg-white flex max-w-fit p-3 mb-2 text-center">
               <Identicon string={user.token || 'default'} size={40} />
+              {/* <Gravatar email={user?.email} /> */}
             </div>
           </div>
 
           {/* name of user */}
-          <div className="text-orange-400 font-bold text-xl">
-            {user.name}
+          <div className="flex flex-col">
+            <div className="text-orange-400 font-bold lg:text-xl md:text-xl text-md">
+              {user.name}
+            </div>
+
+            <div className="text-orange-200">
+              {user.email}
+            </div>
           </div>
 
-          <div className="text-orange-200">
-            {user.email}
-          </div>
-
-          <div className="pt-4 min-w-full">
+          <div className="pt-4 min-w-full lg:block md:block hidden">
             {/* ORDERS */}
             <h1 className="text-2xl font-bold mb-4 text-orange-400">ORDERS</h1>
 
@@ -187,14 +240,35 @@ const ChatSection: React.FC = () => {
           </div>
 
           {/* Sign out button */}
-          <button onClick={handleSignOut} className="rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white mt-auto min-w-full justify-center font-semibold text-xl">
+          <button onClick={handleSignOut} className="rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white mt-auto lg:w-full md:w-full justify-center font-semibold text-xl">
             Sign Out
           </button>
         </div>
 
 
+        {/* Dropdown for orders on small screens */}
+        <div className="lg:hidden md:hidden block pt-4 min-w-full">
+          <select className="block w-full py-2 px-4 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-300" onChange={(e) => openModal(Number(e.target.value))}>
+            <option value="">Select an order...</option>
+            {allOrders && allOrders.map((order: any, index: number) => (
+              <option key={index} value={index}>Order {index + 1}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div className="bg-white p-8 rounded-lg">
+              {renderModalContent()}
+            </div>
+          </div>
+        )}
+
+
+
         {/* Second div (Yellow) - Now takes 2 parts, equal to the third div */}
-        <div className="col-span-4 flex flex-col bg-[#383636] rounded-md m-3">
+        <div className="lg:col-span-4 md:col-span-4 flex flex-col bg-[#383636] rounded-md m-3">
           {/* Messages visible */}
           {!showChat ? (
             // Let's order text and button

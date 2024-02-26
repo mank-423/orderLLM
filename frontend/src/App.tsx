@@ -12,7 +12,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Login />} />
-          <Route path='/order' element={token ? <ChatSection /> : <Navigate to='/' />}/>
+          <Route path='/order' element={<ChatSection />}/>
         </Routes>
       </BrowserRouter>
     </div>
