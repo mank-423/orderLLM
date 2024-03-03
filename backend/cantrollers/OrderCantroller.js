@@ -75,6 +75,11 @@ const confirmOrder = async (req, res) => {
             return total + (item.price * item.quantity)
         }, 0);
 
+        // If the finalPrice comes out to be string
+        if (typeof(finalPrice) === 'string'){
+            finalPrice = parseInt(finalPrice);
+        }
+
         // Save to the database
         // Create a new Order document
         const newOrder = new Order({
@@ -89,9 +94,10 @@ const confirmOrder = async (req, res) => {
         // Save the newOrder document to the database
         const savedOrder = await newOrder.save();
 
-        console.log("Saved order details:", savedOrder);
+        // console.log("Saved order details:", savedOrder);
 
         // , savedOrder  , finalPrice
+        // response: { formatResponse },
         res.status(200).json({ response: { formatResponse }, finalPrice });
 
     } catch (error) {
@@ -122,7 +128,7 @@ const chatOrder = async (req, res) => {
             messages: [
                 {
                     role: "system",
-                    content: `Identify the context from the prompt whether user wants to continue the conversation or end it. And respond with either continue or end, and nothing else.`,
+                    content: `Identify the context from the prompt whether customer wants to continue or end  the ordering. And respond with either continue or end, and nothing else.`,
                 },
                 { role: 'user', content: userPrompt }
             ],
@@ -153,7 +159,7 @@ const chatOrder = async (req, res) => {
             } else {
                 // Your name is Order LLM and you help people in ordering food from the menu:" + menuDescription + "You are developed by Mayank Kumar.
                 const firstTimeGreet = "Hello! Welcome to our restaurant. How can I assist you today?\n\nOur menu includes:\n" + menuDescription + "\n\nPlease let me know if you need any help with your order. What would you like to have today?";
-                history.push(["system", "Your name is Order LLM and you help people in ordering food from the menu" + menuDescription + ". Greet people with the greet" + firstTimeGreet + "You are developed by Mayank Kumar."])
+                history.push(["system", "Your name is Order LLM and you help people in ordering food from the menu" + menuDescription + ". Greet people with the greet" + firstTimeGreet + "You are developed by Mayank Kumar. Just try to finalize order and not ask for mode of payment."])
                 history.push(["user", userPrompt]);
             }
 
