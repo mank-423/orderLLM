@@ -7,6 +7,7 @@ import loginImage from '../../assets/svg/authentication.svg';
 import GoogleLogo from '../../assets/svg/Google-icon.svg';
 import logo from '../../assets/Images/logoCircle.png';
 import Navbar from '../../Components/Navbar';
+import baseUrl from '../../baseUrl';
 
 const Login = () => {
     // const [userDetails, setUserDetails] = useState<firebase.User | null>(null);
@@ -29,7 +30,7 @@ const Login = () => {
 
                 const authUser = async (userIp: firebase.User) => {
                     try {
-                        const response: any = await fetch(`http://localhost:8000/api/users/auth`, {
+                        const response: any = await fetch(`${baseUrl}/api/users/auth`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

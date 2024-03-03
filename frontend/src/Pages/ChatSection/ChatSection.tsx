@@ -5,6 +5,7 @@ import { auth } from '../../firebase/firebaseConfig';
 import logo from '../../assets/Images/logoCircle.png'
 import ClipLoader from "react-spinners/ClipLoader";
 import { CornerDownLeft } from 'react-feather-icon'
+import baseUrl from "../../baseUrl";
 
 
 //Type has changed so wee need to change this
@@ -44,7 +45,7 @@ const ChatSection: React.FC = () => {
     e.preventDefault();
 
     setIsSending(true);
-    const response = await fetch('http://localhost:8000/api/generate/order', {
+    const response = await fetch(`${baseUrl}/api/generate/order`, {
       method: 'POST',
       body: JSON.stringify({
         userPrompt: msg,
@@ -74,7 +75,7 @@ const ChatSection: React.FC = () => {
 
   const handleOrderConfirm = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/generate/confirm', {
+      const response = await fetch(`${baseUrl}/api/generate/confirm`, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -89,7 +90,7 @@ const ChatSection: React.FC = () => {
       setConfirmation(data);
 
       getAllOrders();
-      console.log(data)
+      // console.log(data)
 
     } catch (error) {
       console.log(error);
@@ -157,7 +158,7 @@ const ChatSection: React.FC = () => {
 
   const getAllOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/generate/allOrders?username=${user.email}`, {
+      const response = await fetch(`${baseUrl}/api/generate/allOrders?username=${user.email}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json',
@@ -167,7 +168,7 @@ const ChatSection: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setAllOrders(data);
-        console.log("Response Data", data);
+        // console.log("Response Data", data);
       } else {
         console.error("Error:", response.status);
       }
@@ -186,7 +187,7 @@ const ChatSection: React.FC = () => {
 
       <div className="lg:grid lg:grid-cols-5 md:grid md:grid-cols-5 bg-[#211f1f] min-h-screen lg:p-10 md:p-10">
         {/* First Div (Orange) - Now takes 1 part */}
-        <div className="lg:col-span-1 md:col-span-1 lg:p-4 p-1 flex lg:flex-col md:flex-col items-center gap-3">
+        <div className="lg:col-span-1 md:col-span-1 lg:p-4 p-1 flex lg:flex-col md:flex-col items-center gap-5">
           {/* Inner div with data */}
           <div className="">
             <div className="rounded-full bg-white flex max-w-fit p-3 mb-2 text-center">
@@ -240,7 +241,7 @@ const ChatSection: React.FC = () => {
           </div>
 
           {/* Sign out button */}
-          <button onClick={handleSignOut} className="rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white mt-auto lg:w-full md:w-full justify-center font-semibold text-xl">
+          <button onClick={handleSignOut} className="rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white mt-auto lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-md">
             Sign Out
           </button>
         </div>
@@ -273,7 +274,7 @@ const ChatSection: React.FC = () => {
           {!showChat ? (
             // Let's order text and button
             <div className="flex-grow flex flex-col items-center justify-center p-4">
-              <h2 className="text-5xl text-white font-bold mb-4">Let's order!</h2>
+              <h2 className="lg:text-5xl md:text-5xl text-4xl text-white font-bold mb-4">Let's order!</h2>
               <button
                 onClick={() => setShowChat(true)}
                 className="bg-[#F27B35] text-white py-4 px-8 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none text-xl"
