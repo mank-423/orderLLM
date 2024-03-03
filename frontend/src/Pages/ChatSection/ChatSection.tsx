@@ -101,17 +101,17 @@ const ChatSection: React.FC = () => {
       await auth.signOut();
       // Remove the stored localStorage
       localStorage.removeItem('user');
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       console.error('Error signing out:', (error as Error).message);
     }
   };
 
-  const handleOrderSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedIndex = e.target.value;
-    // Perform actions based on the selected index, such as displaying details of the selected order
-    console.log("Selected Order Index:", selectedIndex);
-  };
+  // const handleOrderSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedIndex = e.target.value;
+  //   // Perform actions based on the selected index, such as displaying details of the selected order
+  //   console.log("Selected Order Index:", selectedIndex);
+  // };
 
 
   // Function to open the modal
@@ -206,7 +206,7 @@ const ChatSection: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-4 min-w-full lg:block md:block hidden">
+          <div className="py-4 min-w-full lg:block md:block hidden">
             {/* ORDERS */}
             <h1 className="text-2xl font-bold mb-4 text-orange-400">ORDERS</h1>
 
@@ -247,8 +247,8 @@ const ChatSection: React.FC = () => {
 
 
         {/* Dropdown for orders on small screens */}
-        <div className="lg:hidden md:hidden block pt-4 min-w-full">
-          <select className="block w-full py-2 px-4 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-300" onChange={(e) => openModal(Number(e.target.value))}>
+        <div className="lg:hidden md:hidden block py-4 px-3 min-w-full">
+          <select className="block w-full py-2 px-4 bg-[#383636] text-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-300" onChange={(e) => openModal(Number(e.target.value))}>
             <option value="">Select an order...</option>
             {allOrders && allOrders.map((order: any, index: number) => (
               <option key={index} value={index}>Order {index + 1}</option>
@@ -268,7 +268,7 @@ const ChatSection: React.FC = () => {
 
 
         {/* Second div (Yellow) - Now takes 2 parts, equal to the third div */}
-        <div className="lg:col-span-4 md:col-span-4 flex flex-col bg-[#383636] rounded-md m-3">
+        <div className="lg:col-span-4 md:col-span-4 flex flex-col bg-[#383636] rounded-md m-3 lg:h-full md:h-full h-[80vh] p-10">
           {/* Messages visible */}
           {!showChat ? (
             // Let's order text and button
@@ -315,7 +315,7 @@ const ChatSection: React.FC = () => {
 
 
               {/* Input */}
-              <div className="flex flex-col items-center justify-center p-4">
+              <div className="flex flex-col items-center justify-center lg:p-4 md:p-4">
                 {/* Area for input of message */}
                 <form onSubmit={handleSubmit} className="flex items-center w-full min-w-full">
                   <div className="relative flex-grow">

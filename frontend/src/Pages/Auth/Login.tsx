@@ -3,9 +3,10 @@ import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, getIdToken } f
 import { auth } from '../../firebase/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
 import firebase from 'firebase/auth';
-import loginImage from '../../assets/svg/login.svg';
+import loginImage from '../../assets/svg/authentication.svg';
 import GoogleLogo from '../../assets/svg/Google-icon.svg';
 import logo from '../../assets/Images/logoCircle.png';
+import Navbar from '../../Components/Navbar';
 
 const Login = () => {
     // const [userDetails, setUserDetails] = useState<firebase.User | null>(null);
@@ -21,9 +22,9 @@ const Login = () => {
                     setIdToken(token);
                     tokenSaved = token;
                 })
-                .catch((error) => {
-                    console.error('Error getting ID token:', error.message);
-                });
+                    .catch((error) => {
+                        console.error('Error getting ID token:', error.message);
+                    });
 
 
                 const authUser = async (userIp: firebase.User) => {
@@ -54,7 +55,7 @@ const Login = () => {
                 };
 
                 console.log("UserObject", userObject);
-                
+
 
                 localStorage.setItem('user', JSON.stringify(userObject));
             } else {
@@ -78,31 +79,35 @@ const Login = () => {
     };
 
     return (
-        <div className='bg-gradient-to-br from-[#161616] via-[#3A3A3A] to-orange-300 min-h-screen flex items-center justify-center lg:pt-0 md:pt-0 pt-8'>
-            <div className='relative grid grid-cols-1 lg:grid-cols-2 bg-[#1e1c1c] rounded-lg p-10 shadow-lg login-main mx-4 lg:mx-auto'>
-                <img src={logo} className='absolute left-[150px] top-[-50px] h-[90px] block md:hidden lg:hidden w-[90px] rounded-full border-2 border-black' alt="order LLM logo" />
-                <div className='border border-white rounded-lg lg:order-2 lg:col-span-1'>
-                    <img src={loginImage} className='h-80 w-80' alt="Login logo" />
-                </div>
+        <div>
+            <Navbar />
+            <div className='bg-gradient-to-br from-[#161616] via-[#3A3A3A] to-orange-300 min-h-screen flex items-center justify-center lg:pt-0 md:pt-0 pt-8'>
+                <div className='relative grid grid-cols-1 lg:grid-cols-2 bg-[#1e1c1c] rounded-lg p-10 shadow-lg login-main mx-4 lg:mx-auto'>
+                    <img src={logo} className='absolute left-[150px] top-[-50px] h-[90px] block md:hidden lg:hidden w-[90px] rounded-full border-2 border-black' alt="order LLM logo" />
+                    <div className='bg-[#484848] rounded-lg lg:order-2 lg:col-span-1'>
+                        <img src={loginImage} className='h-80 w-80' alt="Login logo" />
+                    </div>
 
-                <div className='flex flex-col items-center justify-center space-y-4 lg:col-span-1 lg:order-1'>
-                    <img src={logo} className='h-[90px] w-[90px] hidden md:block lg:block rounded-full border-2 border-orange-500 mt-2' alt="order LLM logo" />
-                    <h1 className='font-bold text-2xl text-white'>Order LLM</h1>
-                    <button
-                        className="bg-orange-400 text-white rounded-lg p-3 font-semibold flex items-center justify-center"
-                        onClick={handleGoogle}
-                    >
-                        <img src={GoogleLogo} className='h-8 w-8' alt="Google logo" />
-                        <span className='ml-2'>Login with Google</span>
-                    </button>
+                    <div className='flex flex-col items-center justify-center space-y-4 lg:col-span-1 lg:order-1'>
+                        <img src={logo} className='h-[90px] w-[90px] hidden md:block lg:block rounded-full border-2 border-orange-500 mt-2' alt="order LLM logo" />
+                        <h1 className='font-bold text-2xl text-white'>Order LLM</h1>
+                        <button
+                            className="bg-orange-400 text-white rounded-lg p-3 font-semibold flex items-center justify-center"
+                            onClick={handleGoogle}
+                        >
+                            <img src={GoogleLogo} className='h-8 w-8' alt="Google logo" />
+                            <span className='ml-2'>Login with Google</span>
+                        </button>
 
-                    <p className='text-center text-white'>
-                        <span>*You use google, right?</span><br />
-                        P.S. Developer is lazy
-                    </p>
+                        <p className='text-center text-white'>
+                            <span>*You use google, right?</span><br />
+                            P.S. Developer is lazy
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
+
     );
 };
 

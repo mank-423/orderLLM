@@ -1,6 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import ChatSection from './Components/ChatSection/ChatSection';
-import Login from './Components/Auth/Login';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ChatSection from './Pages/ChatSection/ChatSection';
+import Login from './Pages/Auth/Login';
+import Landing from './Pages/Landing';
+
 
 const App = () => {
   const storedUser = localStorage.getItem('user');
@@ -11,7 +13,8 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Login />} />
+          <Route path='/' element = {<Landing />} />
+          <Route path='/auth' element={<Login />} />
           <Route path='/order' element={<ChatSection />}/>
         </Routes>
       </BrowserRouter>
