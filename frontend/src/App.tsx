@@ -5,9 +5,10 @@ import Landing from './Pages/Landing';
 
 
 const App = () => {
-  const storedUser = localStorage.getItem('user');
-  const user = storedUser ? JSON.parse(storedUser) : null;
-  const token = user?.token;
+  // This used for protected route
+  // const storedUser = localStorage.getItem('user');
+  // const user = storedUser ? JSON.parse(storedUser) : null;
+  // const token = user?.token;
 
   return (
     <div>

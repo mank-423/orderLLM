@@ -10,14 +10,18 @@ import fast from '../assets/svg/fast.svg'
 import error from '../assets/svg/error.svg'
 import payment from '../assets/svg/payment.svg'
 import { ArrowRight, ArrowDown } from "react-feather-icon"
+import { useNavigate } from "react-router-dom"
 
 const Landing = () => {
+
+  const navigate = useNavigate();
+
   return (
     <div>
       <Navbar />
 
       {/* Logo and heading */}
-      <div className="bg-[#818181]">
+      <div className="bg-[#818181] pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="flex justify-center items-end">
             <img src={logo} alt="logo" />
@@ -27,6 +31,12 @@ const Landing = () => {
             <div className="flex flex-col items-center">
               <h1 className="text-orange-400 font-bold text-5xl">ORDER LLM</h1>
               <h2 className="text-white font-semibold text-xl mb-5">Effortless ordering, no lines attached.</h2>
+              <button
+                className="bg-[#F27B35] text-white py-4 px-8 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none font-bold text-2xl"
+                onClick={() => { navigate('/auth') }}
+              >
+                Try yourself!
+              </button>
             </div>
           </div>
         </div>
@@ -38,10 +48,10 @@ const Landing = () => {
       <div className="bg-[#383636] grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-24">
         {/* Product description */}
         <div className="flex flex-col items-center justify-center">
-          <p className="mb-4 text-orange-400 font-bold text-3xl md:text-5xl">
+          <p className="mb-4 text-orange-400 font-bold text-3xl md:text-5xl text-center">
             <span className="text-white">Order LLM</span> revolutionizes <br />the way you order
           </p>
-          <p className="text-white font-semibold text-lg md:text-xl">Scroll to know more</p>
+          <p className="text-white font-semibold text-lg md:text-xl pt-8">Scroll to know more</p>
           <p className="text-white rotate-180 font-bold mt-[-10px]">^</p>
         </div>
 
@@ -70,7 +80,7 @@ const Landing = () => {
       {/* Steps to use it */}
       {/* Consumer */}
       <div className="bg-[#484848] p-8 md:p-16">
-        <div className="mb-8"> 
+        <div className="mb-8">
           <h1 className="text-orange-400 font-bold text-3xl md:text-5xl flex justify-center items-center">Using Order LLM</h1>
         </div>
 
@@ -103,7 +113,7 @@ const Landing = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Features */}
       <div className="bg-[#818181] p-8 md:p-10">
         <h1 className="text-orange-400 font-bold text-3xl md:text-5xl text-center mb-10 p-7">Key Features of ORDER LLM</h1>

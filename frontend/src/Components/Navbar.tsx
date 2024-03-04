@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { AlignJustify, X } from 'react-feather';
 import logo from '../assets/Images/logoCircle.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -22,17 +21,15 @@ const Navbar = () => {
                 {/* Hamburger icon for mobile */}
                 <div className="lg:hidden">
                     {isMenuOpen ? (
-                        <X
-                            className="text-white cursor-pointer transition-transform transform hover:scale-110"
-                            size={32}
-                            onClick={toggleMenu}
-                        />
+                        // <X></X>
+                        <div className="text-white cursor-pointer transition-transform transform hover:scale-110" onClick={toggleMenu}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </div>
                     ) : (
-                        <AlignJustify
-                            className="text-white cursor-pointer transition-transform transform hover:scale-110"
-                            size={32}
-                            onClick={toggleMenu}
-                        />
+                        // <AlignJustify></AlignJustify>
+                        <div className="text-white cursor-pointer transition-transform transform hover:scale-110" onClick={toggleMenu}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-align-justify"><line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line></svg>
+                        </div>
                     )}
                 </div>
 
@@ -52,7 +49,7 @@ const Navbar = () => {
                 {/* Button for larger screens */}
                 <div className="hidden lg:flex">
                     <button
-                        className="bg-[#F27B35] text-white py-4 px-8 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none font-bold text-lg" 
+                        className="bg-[#F27B35] text-white py-4 px-8 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none font-bold text-lg"
                         onClick={() => { navigate(location.pathname === '/auth' ? '/' : '/auth') }}
                     >
                         {location.pathname === '/auth' ? 'Home' : 'Demo'}
@@ -72,7 +69,7 @@ const Navbar = () => {
                     <a href="#" className="block text-white py-2">
                         Services
                     </a> */}
-                    
+
                     {/* Button for mobile screens */}
                     <button
                         className="bg-[#F27B35] text-white py-2 px-4 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none"

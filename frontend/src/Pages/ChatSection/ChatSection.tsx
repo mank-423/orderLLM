@@ -1,11 +1,11 @@
 import { useState, FormEvent, useEffect } from "react";
-import Identicon from 'react-identicons';
 import { useNavigate } from "react-router-dom";
 import { auth } from '../../firebase/firebaseConfig';
 import logo from '../../assets/Images/logoCircle.png'
 import ClipLoader from "react-spinners/ClipLoader";
 import { CornerDownLeft } from 'react-feather-icon'
 import baseUrl from "../../baseUrl";
+import Avatar from "../../Components/Avatar";
 
 
 //Type has changed so wee need to change this
@@ -88,6 +88,8 @@ const ChatSection: React.FC = () => {
 
       const data: ConfirmationResponse = await response.json();
       setConfirmation(data);
+      console.log(confirmation);
+      
 
       getAllOrders();
       // console.log(data)
@@ -102,7 +104,7 @@ const ChatSection: React.FC = () => {
       await auth.signOut();
       // Remove the stored localStorage
       localStorage.removeItem('user');
-      navigate('/login');
+      navigate('/auth');
     } catch (error) {
       console.error('Error signing out:', (error as Error).message);
     }
@@ -189,9 +191,9 @@ const ChatSection: React.FC = () => {
         {/* First Div (Orange) - Now takes 1 part */}
         <div className="lg:col-span-1 md:col-span-1 lg:p-4 p-1 flex lg:flex-col md:flex-col items-center gap-5">
           {/* Inner div with data */}
-          <div className="">
+          <div>
             <div className="rounded-full bg-white flex max-w-fit p-3 mb-2 text-center">
-              <Identicon string={user.token || 'default'} size={40} />
+              <Avatar initials={user.name[0] || 'default'} />
               {/* <Gravatar email={user?.email} /> */}
             </div>
           </div>
@@ -250,8 +252,8 @@ const ChatSection: React.FC = () => {
         {/* Dropdown for orders on small screens */}
         <div className="lg:hidden md:hidden block py-4 px-3 min-w-full">
           <select className="block w-full py-2 px-4 bg-[#383636] text-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-300" onChange={(e) => openModal(Number(e.target.value))}>
-            <option value="">Select an order...</option>
-            {allOrders && allOrders.map((order: any, index: number) => (
+            <option value="">View your orders...</option>
+            {allOrders && allOrders.map((_order: any, index: number) => (
               <option key={index} value={index}>Order {index + 1}</option>
             ))}
           </select>
@@ -290,7 +292,7 @@ const ChatSection: React.FC = () => {
                     {/* Render user Identicon */}
                     {index % 2 === 0 && (
                       <div className="rounded-full min-w-fit mr-2">
-                        <Identicon string={user.token || 'default'} size={28} />
+                        <Avatar initials={user.name[0] || 'default'} />
                       </div>
                     )}
 
