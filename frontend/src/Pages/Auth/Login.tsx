@@ -6,7 +6,6 @@ import firebase from 'firebase/auth';
 import loginImage from '../../assets/svg/authentication.svg';
 import GoogleLogo from '../../assets/svg/Google-icon.svg';
 import logo from '../../assets/Images/logoCircle.png';
-import Navbar from '../../Components/Navbar';
 import baseUrl from '../../baseUrl';
 
 const Login = () => {
