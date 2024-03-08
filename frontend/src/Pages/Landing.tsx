@@ -21,7 +21,7 @@ const Landing = () => {
       <Navbar />
 
       {/* Logo and heading */}
-      <div className="bg-[#818181] pb-6">
+      <section className="bg-[#818181] pb-6 h-1/5">
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="flex justify-center items-end">
             <img src={logo} alt="logo" />
@@ -29,7 +29,7 @@ const Landing = () => {
 
           <div className="flex flex-col items-center md:items-start justify-center text-center md:text-left">
             <div className="flex flex-col items-center">
-              <h1 className="text-orange-400 font-bold text-5xl">ORDER LLM</h1>
+              <h1 className="text-orange-400 font-bold text-4xl">ORDER LLM</h1>
               <h2 className="text-white font-semibold text-xl mb-5">Effortless ordering, no lines attached.</h2>
               <button
                 className="bg-[#F27B35] text-white py-4 px-8 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none font-bold text-2xl"
@@ -40,15 +40,15 @@ const Landing = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Intro to the product */}
 
       {/* Showcase of the product in a grid layout */}
-      <div className="bg-[#383636] grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-24">
+      <section className="bg-[#383636] grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-24 h-1/5">
         {/* Product description */}
         <div className="flex flex-col items-center justify-center">
-          <p className="mb-4 text-orange-400 font-bold text-3xl md:text-5xl text-center">
+          <p className="mb-4 text-orange-400 font-bold text-3xl md:text-4xl text-center">
             <span className="text-white">Order LLM</span> revolutionizes <br />the way you order
           </p>
           <p className="text-white font-semibold text-lg md:text-xl pt-8">Scroll to know more</p>
@@ -59,32 +59,32 @@ const Landing = () => {
         <div className="flex justify-center">
           <img src={people} className="h-80 w-160 object-cover" alt="Order LLM Product" />
         </div>
-      </div>
+      </section>
 
       {/* Use of product */}
-      <div className="bg-orange-100 p-8 md:p-10">
-        <h1 className="flex justify-center items-center font-bold text-3xl md:text-5xl mb-5 text-[#383636]">What is ORDER LLM ?</h1>
+      <section className="bg-orange-100 p-8 md:p-10 h-1/5">
+        <h1 className="flex justify-center items-center font-bold text-3xl md:text-4xl mb-5 text-[#383636]">What is ORDER LLM ?</h1>
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="flex justify-center items-center">
             <img src={orderConfirm} className="h-80 w-80" alt="order" />
           </div>
-          <div className="flex justify-center items-center md:items-start">
-            <h1 className="text-orange-400 font-semibold text-3xl md:text-5xl my-3">
+          <div className="flex justify-center items-center">
+            <h1 className="text-orange-400 font-semibold text-3xl md:text-4xl my-3">
               A multi-functionality chatbot,
               which can help consumers to <span className="text-[#484848]">explore the catalog</span> effortlessly and <span className="text-[#484848]">place the orders</span> easily.
             </h1>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Steps to use it */}
       {/* Consumer */}
-      <div className="bg-[#484848] p-8 md:p-16">
+      <section className="bg-[#484848] p-8 md:p-16 h-1/5">
         <div className="mb-8">
-          <h1 className="text-orange-400 font-bold text-3xl md:text-5xl flex justify-center items-center">Using Order LLM</h1>
+          <h1 className="text-orange-400 font-bold text-3xl md:text-4xl flex justify-center items-center">Using Order LLM</h1>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-center gap-6">
+        <div className="flex flex-col md:flex-row justify-center gap-6 p-10">
           <div>
             <img src={auth} alt="chat" className="h-50 w-50" />
             <h1 className="text-white text-center mt-2 md:mt-0">Authenticate and enter the portal</h1>
@@ -112,11 +112,11 @@ const Landing = () => {
             <h1 className="text-white text-center mt-2 md:mt-0">Complete your order and pay!</h1>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Features */}
-      <div className="bg-[#818181] p-8 md:p-10">
-        <h1 className="text-orange-400 font-bold text-3xl md:text-5xl text-center mb-10 p-7">Key Features of ORDER LLM</h1>
+      <section className="bg-[#818181] p-8 md:px-12 md:py-16 h-1/5">
+        <h1 className="text-orange-400 font-bold text-3xl md:text-4xl text-center mb-10 p-7">Key Features of ORDER LLM</h1>
 
         {/* List of Features */}
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-white">
@@ -156,7 +156,7 @@ const Landing = () => {
             </div>
           </li>
         </ul>
-      </div>
+      </section>
     </div>
   )
 }

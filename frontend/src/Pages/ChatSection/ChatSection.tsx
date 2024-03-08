@@ -57,7 +57,6 @@ const ChatSection: React.FC = () => {
     setMsg('');
     const result = await response.json();
 
-
     setMsgAr(prevMsgAr => [...prevMsgAr, msg, result.response]);
     setAi(result.response);
     setIsSending(false);
@@ -65,7 +64,8 @@ const ChatSection: React.FC = () => {
     if (result.status === 'end') {
       const confirm = window.confirm("Are you sure to confirm the order?")
       if (confirm) {
-        handleOrderConfirm();
+        handleOrderConfirm(result.response);
+        console.log(ai);
       } else {
         alert("Order cancelled!")
       }
@@ -73,7 +73,7 @@ const ChatSection: React.FC = () => {
     }
   };
 
-  const handleOrderConfirm = async () => {
+  const handleOrderConfirm = async (order: string) => {
     try {
       const response = await fetch(`${baseUrl}/api/generate/confirm`, {
         method: 'POST',
@@ -82,14 +82,17 @@ const ChatSection: React.FC = () => {
         },
         body: JSON.stringify({
           username: user.email,
-          orderStatement: ai,
+          orderStatement: order,
         })
       });
 
+      // console.log("The final order:",order);
+
       const data: ConfirmationResponse = await response.json();
+      console.log(data);
       setConfirmation(data);
       console.log(confirmation);
-      
+      setMsgAr([]);
 
       getAllOrders();
       // console.log(data)
@@ -191,47 +194,55 @@ const ChatSection: React.FC = () => {
         {/* First Div (Orange) - Now takes 1 part */}
         <div className="lg:col-span-1 md:col-span-1 lg:p-4 p-1 flex lg:flex-col md:flex-col items-center gap-5">
           {/* Inner div with data */}
-          <div>
-            <div className="rounded-full bg-white flex max-w-fit p-3 mb-2 text-center">
-              <Avatar initials={user.name[0] || 'default'} />
-              {/* <Gravatar email={user?.email} /> */}
+          <div className="flex flex-row gap-5">
+            <div>
+              <div className="rounded-full bg-white flex max-w-fit p-3 mb-2 text-center">
+                <Avatar initials={user.name[0] || 'default'} />
+                {/* <Gravatar email={user?.email} /> */}
+              </div>
+            </div>
+
+            {/* name of user */}
+            <div className="flex flex-col justify-center">
+              <div className="text-orange-400 font-bold lg:text-xl md:text-xl text-md">
+                {user.name}
+              </div>
+
+              <div className="text-orange-200">
+                {user.email}
+              </div>
             </div>
           </div>
 
-          {/* name of user */}
-          <div className="flex flex-col">
-            <div className="text-orange-400 font-bold lg:text-xl md:text-xl text-md">
-              {user.name}
-            </div>
-
-            <div className="text-orange-200">
-              {user.email}
-            </div>
-          </div>
-
-          <div className="py-4 min-w-full lg:block md:block hidden">
+          <div className="py-4 min-w-full lg:block md:block hidden mt-20">
             {/* ORDERS */}
             <h1 className="text-2xl font-bold mb-4 text-orange-400">ORDERS</h1>
 
-            <div className="bg-white flex justify-center items-center p-2 rounded-lg">
+            <div className="bg-[#383636] flex justify-center items-center rounded-lg">
               {allOrders && allOrders.length > 0 ? (
                 <div>
-                  {/* Map over the orders array and render each order */}
-                  {allOrders.map((order: any, index: number) => (
-                    <div key={index} className="mb-2 min-w-full">
-                      <p className="text-xl font-semibold">Order {index + 1}</p>
-                      <div className="bg-gray-100 p-4 rounded-lg">
-                        {/* Map over the order items array and render each item */}
-                        {order.order.map((item: any, itemIndex: number) => (
-                          <div key={itemIndex} className="flex gap-4">
-                            <p className="text-base font-semibold">Item{itemIndex + 1}: {item.item}</p>
-                            <p className="text-base">Quantity: {item.quantity}</p>
-                            <p className="text-base">Price: {item.price}</p>
-                          </div>
-                        ))}
+                  {/* Dropdown for orders on large screens */}
+                  <div className="sm:hidden lg:block md:block">
+                    <select
+                      className="block w-[270px] py-2 px-4 bg-[#383636] text-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-300"
+                      onChange={(e) => openModal(Number(e.target.value))}
+                      value={selectedOrderIndex !== null ? selectedOrderIndex : ""}
+                    >
+                      <option value="">View your orders...</option>
+                      {allOrders && allOrders.map((_order: any, index: number) => (
+                        <option key={index} value={index}>Order {index + 1}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Modal */}
+                  {isModalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                      <div className="bg-white p-8 rounded-lg">
+                        {renderModalContent()}
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
               ) : (
                 // Show "No orders..." if there are no orders
@@ -251,7 +262,11 @@ const ChatSection: React.FC = () => {
 
         {/* Dropdown for orders on small screens */}
         <div className="lg:hidden md:hidden block py-4 px-3 min-w-full">
-          <select className="block w-full py-2 px-4 bg-[#383636] text-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-300" onChange={(e) => openModal(Number(e.target.value))}>
+          <select
+            className="block w-full py-2 px-4 bg-[#383636] text-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-300"
+            onChange={(e) => openModal(Number(e.target.value))}
+            value={selectedOrderIndex !== null ? selectedOrderIndex : ""}
+          >
             <option value="">View your orders...</option>
             {allOrders && allOrders.map((_order: any, index: number) => (
               <option key={index} value={index}>Order {index + 1}</option>
@@ -271,7 +286,7 @@ const ChatSection: React.FC = () => {
 
 
         {/* Second div (Yellow) - Now takes 2 parts, equal to the third div */}
-        <div className="lg:col-span-4 md:col-span-4 flex flex-col bg-[#383636] rounded-md m-3 lg:h-full md:h-full h-[80vh] p-10">
+        <div className="lg:col-span-4 md:col-span-4 flex flex-col bg-[#383636] rounded-md lg:h-full md:h-full h-[80vh] p-4">
           {/* Messages visible */}
           {!showChat ? (
             // Let's order text and button
@@ -318,20 +333,20 @@ const ChatSection: React.FC = () => {
 
 
               {/* Input */}
-              <div className="flex flex-col items-center justify-center lg:p-4 md:p-4">
+              <div className="flex flex-col items-center justify-center">
                 {/* Area for input of message */}
-                <form onSubmit={handleSubmit} className="flex items-center w-full min-w-full">
+                <form onSubmit={handleSubmit} className="flex items-center min-w-full">
                   <div className="relative flex-grow">
                     <input
                       type="text"
                       value={msg}
                       onChange={(e) => setMsg(e.target.value)}
-                      placeholder="I would like to order..."
-                      className="border-2 p-3 w-full rounded-l-lg rounded-r-lg focus:outline-none"
+                      placeholder="Say 'Hi' to start a converstation.."
+                      className="border-2 p-3 w-full rounded-l-lg rounded-r-lg focus:outline-none bg-[#383636] text-white"
                     />
                     <button
                       type="submit"
-                      className="bg-orange-400 text-white px-3 py-1 absolute right-0 top-0 bottom-0 rounded-r-lg rounded-l-none transition duration-300 hover:bg-orange-300 focus:outline-none"
+                      className="bg-orange-400 text-white border border-white border-l-orange-400 px-3 py-1 absolute right-0 top-0 bottom-0 rounded-r-lg rounded-l-none transition duration-300 hover:bg-orange-300 focus:outline-none"
                     >
                       <CornerDownLeft />
                     </button>
