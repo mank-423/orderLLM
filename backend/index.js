@@ -18,6 +18,9 @@ const MONGO_URL = process.env.MONGO_URL;
 app.use('/api/generate', orderRouter);
 app.use('/api/users', userRoutes);
 
+app.get('/', (req, res) =>{
+    res.send('Server is runing')
+})
 app.listen(PORT, () => {
     console.log(`Server started at port ${PORT}`);
     connectDB(MONGO_URL);

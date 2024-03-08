@@ -4,6 +4,7 @@ const { ChatOpenAI } = require('@langchain/openai')
 const { StringOutputParser } = require('@langchain/core/output_parsers')
 const { OpenAI } = require('openai');
 const Order = require('../models/OrderModel')
+const cleanAndParseJson = require('../utils/cleanAndParse');
 
 const outputParser = new StringOutputParser();
 
@@ -15,8 +16,8 @@ let status = "continue"
 
 const menuItems = [
     { name: "Pizza", description: "A delicious cheese pizza", price: "$10" },
-    { name: "Burger", description: "Juicy beef burger with lettuce and tomato", price: "$8" },
-    { name: "Salad", description: "Fresh garden salad with your choice of dressing", price: "$7" }
+    { name: "Burger", description: "A Cheese burger", price: "$8" },
+    { name: "Salad", description: "Fresh vegetable salad", price: "$7" }
 ];
 
 
@@ -53,8 +54,16 @@ const confirmOrder = async (req, res) => {
     const { orderStatement, username } = req.body;
 
     try {
+        // Replace all occurrences of \n with an empty string
+        const cleanedOrderStatement = orderStatement.replace(/\n/g, "");
+        //  System prompt 
+        const promptOrder =
+            `Given the following order summary, extract the item, quantity and price for each item, and present the details in JSON format without including the currency symbol.\
+            Order Summary:${cleanedOrderStatement}.\
+            Please format the extracted details as JSON in the following structure: array of all json orders with each object containing "item", "quantity" and "price" keys. Call the array 'items'.`;
+
         const prompt = ChatPromptTemplate.fromMessages([
-            ['system', 'Based on the the statement' + orderStatement + ', extract the order item, quantity, and price of each order in object, use key named `orders` for denoting orders']
+            ['system', promptOrder]
         ]);
 
         // Chain creation
@@ -62,43 +71,48 @@ const confirmOrder = async (req, res) => {
 
         //  Making a json object out of it
         const response = await llmChain.invoke({ input: orderStatement });
-        // console.log(response)
+        // console.log("Response of llm:",response)
 
-        //  Parsing the JSON
-        const formatResponse = JSON.parse(response);
-        // console.log(formatResponse.orders);
+        // Use the utility function to clean and parse the response
+        const formatResponse = cleanAndParseJson(response);
+
+        if (!formatResponse || !formatResponse.items) {
+            throw new Error("Invalid format or empty items in response.");
+        }
+
+        // console.log("Cleaned response", formatResponse.items);
 
         // Calculate the final price
-        const finalPrice = formatResponse.orders.reduce((total, item) => {
+        const finalPrice = formatResponse.items.reduce((total, item) => {
             // Check if price is a string and contains a '$', then remove it
-            const price = typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price;
             return total + (item.price * item.quantity)
         }, 0);
+        console.log(finalPrice);
 
-        // If the finalPrice comes out to be string
-        if (typeof(finalPrice) === 'string'){
-            finalPrice = parseInt(finalPrice);
-        }
+        // // If the finalPrice comes out to be string
+        // if (typeof(finalPrice) === 'string'){
+        //     finalPrice = parseInt(finalPrice);
+        // }
 
         // Save to the database
         // Create a new Order document
         const newOrder = new Order({
             username: username, // Replace with the actual username logic
-            order: formatResponse.orders,
+            order: formatResponse.items,
             finalPrice,
         });
 
 
-        console.log("Orders,", formatResponse);
+        // console.log("Orders,", formatResponse);
 
-        // Save the newOrder document to the database
+        // // Save the newOrder document to the database
         const savedOrder = await newOrder.save();
-
-        // console.log("Saved order details:", savedOrder);
+        console.log("Saved order details:", savedOrder);
 
         // , savedOrder  , finalPrice
         // response: { formatResponse },
         res.status(200).json({ response: { formatResponse }, finalPrice });
+        // res.json(response)
 
     } catch (error) {
         console.log(error);
@@ -128,7 +142,7 @@ const chatOrder = async (req, res) => {
             messages: [
                 {
                     role: "system",
-                    content: `Identify the context from the prompt whether customer wants to continue or end  the ordering. And respond with either continue or end, and nothing else.`,
+                    content: `Identify the context from the prompt whether customer wants to continue or end the ordering. And respond with either continue or end, and nothing else.`,
                 },
                 { role: 'user', content: userPrompt }
             ],
@@ -138,13 +152,14 @@ const chatOrder = async (req, res) => {
 
         if (status === 'end') {
             history.push(["user", userPrompt]);
-            history.push(["system", "Summarize the order as item, quantity and price of one item and end the conversation."]);
+            history.push(["system", "Summarize the order as item, quantity and price of items and end the conversation."]);
 
             const prompt = ChatPromptTemplate.fromMessages(history);
 
             // Chain creation
             const llmChain = prompt.pipe(chatModel).pipe(outputParser);
             const response = await llmChain.invoke({ input: userPrompt });
+            // console.log("When the convo ends: ", response);
             // Empty the conversation
             history = [];
             console.log(status)
@@ -158,8 +173,8 @@ const chatOrder = async (req, res) => {
                 history.push(["user", userPrompt])
             } else {
                 // Your name is Order LLM and you help people in ordering food from the menu:" + menuDescription + "You are developed by Mayank Kumar.
-                const firstTimeGreet = "Hello! Welcome to our restaurant. How can I assist you today?\n\nOur menu includes:\n" + menuDescription + "\n\nPlease let me know if you need any help with your order. What would you like to have today?";
-                history.push(["system", "Your name is Order LLM and you help people in ordering food from the menu" + menuDescription + ". Greet people with the greet" + firstTimeGreet + "You are developed by Mayank Kumar. Just try to finalize order and not ask for mode of payment."])
+                const firstTimeGreet = "Hello! Welcome to our restaurant. How can I assist you today?Our menu includes:" + menuDescription + ".Please let me know if you need any help with your order. What would you like to have today?";
+                history.push(["system", "Your name is Order LLM and you are a professional waiter, you help people in ordering food from the menu, and the menu is" + menuDescription + ". Greet people with the greet" + firstTimeGreet + "Stick to the conversation and just try to finalize order, don't ask for mode of payment. You are developed by Mayank Kumar. "])
                 history.push(["user", userPrompt]);
             }
 
