@@ -157,6 +157,15 @@ const Landing = () => {
           </li>
         </ul>
       </section>
+
+      <section className="bg-orange-100">
+        <div className="flex justify-center items-center">
+          <h1 className="text-lg font-bold my-2">Developed by <a href="https://github.com/mank-423" className="text-blue-500">@Mayank</a> ❤️</h1>
+        </div>
+        <div className="flex justify-center items-center">
+          <h1 className="text-lg font-bold my-2">Project Source code: <a href="https://github.com/mank-423/orderLLM" className="text-blue-400">Link🔗</a></h1>
+        </div>
+      </section>
     </div>
   )
 }
