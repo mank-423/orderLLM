@@ -37,12 +37,29 @@ const openai = new OpenAI({
     apiKey: process.env.OPEN_AI_KEY,
 });
 
-const getAllOrders = async (req, res) => {
-    const { username } = req.query;
-
+const getAllOrder = async (req, res) => {
     try {
-        const orders = await Order.find({ username });
+        const details = await Order.find({});
+        res.json({details})
+        // const totalPrice = details.reduce((total, item) => total + item.finalPrice, 0);
+        // const totalOrders = details.length;
+        // console.log(totalPrice);
+        // console.log(totalOrders);
+        // if (!details) {
+        //     res.status(200).json({ details: 'No data' })
+        // } else {
+        //     res.status(200).json({ details, totalOrders, totalPrice })
+        // }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
+const getAllOrdersUser = async (req, res) => {
+    const { email } = req.params;
+    try {
+        const orders = await Order.find({ username: email });
         res.status(200).json(orders);
     } catch (error) {
         console.error(error);
@@ -196,5 +213,5 @@ const chatOrder = async (req, res) => {
 
 
 module.exports = {
-    confirmOrder, chatOrder, getAllOrders
+    confirmOrder, chatOrder, getAllOrdersUser, getAllOrder
 }

@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const order = require('../cantrollers/OrderCantroller');
 
-router.get('/allOrders', order.getAllOrders);
+router.get('/allOrder', order.getAllOrder);
+router.get('/allOrders/:email', order.getAllOrdersUser);
 router.post('/order', order.chatOrder);
 router.post('/confirm', order.confirmOrder);
 

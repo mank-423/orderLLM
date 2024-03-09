@@ -1,63 +1,87 @@
 const User = require('../models/UserModel');
 
 const userCantroller = {
-    getAllUser : async(req, res) => {
+    getAllUser: async (req, res) => {
         try {
             const users = await User.find();
-            res.status(200).json({status: "ok", message: users});
+            res.status(200).json({ status: "ok", message: users });
         } catch (error) {
             console.error('Error fetching users:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
-    registerUser : async(req, res) => {
+    registerUser: async (req, res) => {
         const { name, email, userName, password } = req.body;
 
         try {
-            const newUser = await User.create({name, email, userName, password});
-            res.status(200).json({status: "ok", message: newUser});
+            const newUser = await User.create({ name, email, userName, password });
+            res.status(200).json({ status: "ok", message: newUser });
         } catch (error) {
             console.error('Error fetching users:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
-    loginUser : async(req, res) => {
+    loginUser: async (req, res) => {
         const { userName, password } = req.body;
         try {
-            const user = await User.find({userName, password});
-            if (user){
-                res.status(200).json({status: 'ok', message: 'Login valid'});
-            }else{
-                res.staus(500).json({error: 'Invalid user'})
+            const user = await User.find({ userName, password });
+            if (user) {
+                res.status(200).json({ status: 'ok', message: 'Login valid' });
+            } else {
+                res.staus(500).json({ error: 'Invalid user' })
             }
-            
+
         } catch (error) {
             console.error('Error fetching users:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
-    authUser : async(req, res) => {
+    authUser: async (req, res) => {
         try {
             const { name, email, userName, password } = req.body;
 
             // If the user already exists
-            const user = await User.findOne({email});
+            const user = await User.findOne({ email });
             let isAlreadyRegistered = false;
-            if (user){
+            if (user) {
                 newUser = user;
                 isAlreadyRegistered = true;
             }
             // If new user then create user
-            else{
-                newUser = await User.create({name, email, userName, password});
+            else {
+                newUser = await User.create({ name, email, userName, password });
             }
-            res.status(200).json({status: "ok", message: newUser, registered: isAlreadyRegistered});
+            res.status(200).json({ status: "ok", message: newUser, registered: isAlreadyRegistered });
         } catch (error) {
             console.error('Error fetching users:', error);
             res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },
+
+    isAdmin: async (req, res) => {
+        try {
+            const { email } = req.params;
+
+            //Find the user
+            const user = await User.findOne({ email });
+            // If user not found
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            // Then check the role
+            if (user.role === 'admin') {
+                return res.status(200).json({ isAdmin: true });
+            } 
+            // Not admin
+            else {
+                return res.status(200).json({ isAdmin: false });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
     }
 };

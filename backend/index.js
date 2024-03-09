@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const orderRouter = require('./routes/orderRoutes');
+const adminRoutes = require('./routes/adminRoutes')
 const {connectDB} = require('./config/dbconfig');
 
 const app = express();
@@ -17,6 +18,7 @@ const MONGO_URL = process.env.MONGO_URL;
 
 app.use('/api/generate', orderRouter);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) =>{
     res.send('Server is runing')
