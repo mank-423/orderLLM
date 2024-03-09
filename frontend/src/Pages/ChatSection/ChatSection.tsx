@@ -286,19 +286,23 @@ const ChatSection: React.FC = () => {
           </div>
 
           {/* Sign out button */}
-          <button onClick={() => navigate('/admin')} className="rounded-lg px-3 py-3 bg-orange-400 hover:bg-orange-500 text-white mt-auto lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-sm">
-            <span className="flex justify-center items-center">Admin Panel</span>
-          </button>
-          <button onClick={handleSignOut} className="rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-sm">
+          {isAdmin && (
+            <button onClick={() => navigate('/admin')} className="rounded-lg px-3 py-3 bg-orange-400 hover:bg-orange-500 text-white mt-auto lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-sm lg:block md:block hidden">
+              <span className="flex justify-center items-center">Admin Panel</span>
+            </button>
+          )}
+          <button onClick={handleSignOut} className={`rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-sm ${isAdmin ? '' : 'mt-auto'}`}>
             <span className="flex justify-center items-center">Logout</span>
           </button>
         </div>
 
-        <div className="lg:hidden md:hidden flex justify-center items-center px-3 py-2">
-          <button onClick={() => navigate('/admin')} className="rounded-lg px-3 py-3 bg-orange-400 hover:bg-orange-500 text-white w-full justify-center font-semibold lg:text-xl md:text-xl text-sm">
-            <span className="flex text-lg justify-center items-center">Admin Panel</span>
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="lg:hidden md:hidden flex justify-center items-center px-3 py-2">
+            <button onClick={() => navigate('/admin')} className="rounded-lg px-3 py-3 bg-orange-400 hover:bg-orange-500 text-white w-full justify-center font-semibold lg:text-xl md:text-xl text-sm">
+              <span className="flex text-lg justify-center items-center">Admin Panel</span>
+            </button>
+          </div>
+        )}
 
         {/* Dropdown for orders on small screens */}
         <div className="lg:hidden md:hidden block py-4 px-3 min-w-full">
