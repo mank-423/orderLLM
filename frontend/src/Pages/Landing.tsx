@@ -29,7 +29,7 @@ const Landing = () => {
 
           <div className="flex flex-col items-center md:items-start justify-center text-center md:text-left">
             <div className="flex flex-col items-center">
-              <h1 className="text-orange-400 font-bold text-4xl">ORDER LLM</h1>
+              <h1 className="text-orange-200 font-bold text-4xl">ORDER LLM</h1>
               <h2 className="text-white font-semibold text-xl mb-5">Effortless ordering, no lines attached.</h2>
               <button
                 className="bg-[#F27B35] text-white py-4 px-8 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none font-bold text-2xl"
@@ -116,7 +116,7 @@ const Landing = () => {
 
       {/* Features */}
       <section className="bg-[#818181] p-8 md:px-12 md:py-16 h-1/5">
-        <h1 className="text-orange-400 font-bold text-3xl md:text-4xl text-center mb-10 p-7">Key Features of ORDER LLM</h1>
+        <h1 className="text-orange-200 font-bold text-3xl md:text-4xl text-center mb-10 p-7">Key Features of ORDER LLM</h1>
 
         {/* List of Features */}
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-white">
