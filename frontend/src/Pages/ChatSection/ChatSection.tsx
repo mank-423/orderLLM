@@ -35,6 +35,7 @@ const ChatSection: React.FC = () => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [selectedOrderIndex, setSelectedOrderIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   let navigate = useNavigate();
 
@@ -163,7 +164,7 @@ const ChatSection: React.FC = () => {
 
   const getAllOrders = async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/generate/allOrders?username=${user.email}`, {
+      const response = await fetch(`${baseUrl}/api/generate/allOrders/${user.email}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json',
@@ -182,15 +183,46 @@ const ChatSection: React.FC = () => {
     }
   }
 
+  const isAdminCheck = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/api/users/isAdmin/${user.email}`, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      // Check if isAdmin property exists in the response data
+      if ('isAdmin' in data) {
+        // Save the isAdmin property to localStorage
+        localStorage.setItem('isAdmin', data.isAdmin);
+        setIsAdmin(data.isAdmin);
+        console.log(isAdmin);
+
+      } else {
+        console.error('isAdmin property not found in the response data');
+      }
+
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  useEffect(() => {
+    isAdminCheck();
+  }, [])
+
   useEffect(() => {
     getAllOrders();
   }, []);
 
 
   return (
-    <section className=" min-h-screen">
+    <section className="min-h-screen">
 
-      <div className="lg:grid lg:grid-cols-5 md:grid md:grid-cols-5 bg-[#211f1f] min-h-screen lg:p-10 md:p-10">
+      <div className="lg:grid lg:grid-cols-5 md:grid md:grid-cols-5 bg-[#211f1f] min-h-screen lg:p-10 md:p-10 p-4">
         {/* First Div (Orange) - Now takes 1 part */}
         <div className="lg:col-span-1 md:col-span-1 lg:p-4 p-1 flex lg:flex-col md:flex-col items-center gap-5">
           {/* Inner div with data */}
@@ -254,11 +286,19 @@ const ChatSection: React.FC = () => {
           </div>
 
           {/* Sign out button */}
-          <button onClick={handleSignOut} className="rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white mt-auto lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-md">
-            Sign Out
+          <button onClick={() => navigate('/admin')} className="rounded-lg px-3 py-3 bg-orange-400 hover:bg-orange-500 text-white mt-auto lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-sm">
+            <span className="flex justify-center items-center">Admin Panel</span>
+          </button>
+          <button onClick={handleSignOut} className="rounded-lg px-3 py-3 bg-orange-300 hover:bg-orange-500 text-white lg:w-full md:w-full justify-center font-semibold lg:text-xl md:text-xl text-sm">
+            <span className="flex justify-center items-center">Logout</span>
           </button>
         </div>
 
+        <div className="lg:hidden md:hidden flex justify-center items-center px-3 py-2">
+          <button onClick={() => navigate('/admin')} className="rounded-lg px-3 py-3 bg-orange-400 hover:bg-orange-500 text-white w-full justify-center font-semibold lg:text-xl md:text-xl text-sm">
+            <span className="flex text-lg justify-center items-center">Admin Panel</span>
+          </button>
+        </div>
 
         {/* Dropdown for orders on small screens */}
         <div className="lg:hidden md:hidden block py-4 px-3 min-w-full">
