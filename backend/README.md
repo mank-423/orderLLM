@@ -1,4 +1,5 @@
 # LLM Order Backend
+Backend of the project is made using Node.js, Express.js, Mongoose, MongoDB, <a href="https://js.langchain.com/docs/get_started/introduction">LangChain</a>, and OpenAI. It uses a sentiment check before answering to understand whether user wants to continue or end the conversation, and based on that the order is confirmed.
 
 ## Architecture
 - The architecture in the project is of MVC(Model-View-Cantroller), with backend of models and cantrollers, and the high-level design is,
