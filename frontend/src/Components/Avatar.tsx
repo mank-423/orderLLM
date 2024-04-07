@@ -15,20 +15,24 @@ const generateColor = (initials: string): string => {
 const Avatar: React.FC<AvatarProps> = ({ initials }) => {
   const backgroundColor = generateColor(initials);
 
-  const style = {
-    backgroundColor,
-    color: 'black', // or any other text color you prefer
-    width: '40px', // adjust the width and height as needed
-    height: '40px',
-    fontWeight:'bold',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
+  // const style = {
+  //   backgroundColor,
+  //   color: 'black', // or any other text color you prefer
+  //   width: '40px', // adjust the width and height as needed
+  //   height: '40px',
+  //   fontWeight:'bold',
+  //   borderRadius: '50%',
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // };
 
   return (
-    <div style={style}>
+    // <div style={style}>
+    //   {initials}
+    // </div>
+    <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center font-bold rounded-full" 
+         style={{ backgroundColor, color: 'black' }}>
       {initials}
     </div>
   );

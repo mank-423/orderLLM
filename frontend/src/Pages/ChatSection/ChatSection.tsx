@@ -16,7 +16,8 @@ type OrderItem = {
 };
 
 type ConfirmationResponse = {
-  status: string;
+  status: boolean;
+  unavailableItems?: string[];
   response: {
     formatResponse: {
       orders: OrderItem[];
@@ -90,12 +91,17 @@ const ChatSection: React.FC = () => {
       // console.log("The final order:",order);
 
       const data: ConfirmationResponse = await response.json();
-      console.log(data);
-      setConfirmation(data);
-      console.log(confirmation);
-      setMsgAr([]);
 
-      getAllOrders();
+      if (data.status == true) {
+        console.log(data);
+        setConfirmation(data);
+        console.log(confirmation);
+        setMsgAr([]);
+
+        getAllOrders();
+      }else{
+        alert("You haven't placed right orders. The items don't exist in the menu or bot couldn't understand your order");
+      }
       // console.log(data)
 
     } catch (error) {
@@ -133,7 +139,6 @@ const ChatSection: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  // Render the modal content
   // Render the modal content
   const renderModalContent = () => {
     if (selectedOrderIndex !== null && allOrders && allOrders[selectedOrderIndex]) {
@@ -183,6 +188,7 @@ const ChatSection: React.FC = () => {
     }
   }
 
+  //Check if the user is admin or not, if yes need to show one button for admin panel
   const isAdminCheck = async () => {
     try {
       const response = await fetch(`${baseUrl}/api/users/isAdmin/${user.email}`, {
