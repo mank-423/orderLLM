@@ -40,7 +40,7 @@ const openai = new OpenAI({
 const getAllOrder = async (req, res) => {
     try {
         const details = await Order.find({});
-        res.json({details})
+        res.json({ details })
         // const totalPrice = details.reduce((total, item) => total + item.finalPrice, 0);
         // const totalOrders = details.length;
         // console.log(totalPrice);
@@ -76,12 +76,16 @@ const confirmOrder = async (req, res) => {
         //  System prompt 
         const promptOrder =
             `Given the following order summary, extract the item, quantity and price for each item, and present the details in JSON format without including the currency symbol.\
-            Order Summary:${cleanedOrderStatement}.\
+            It's crucial to use the exact names from the menu: ${menuItems.map(item => item.name).join(", ")}.\
+            Order Summary:${cleanedOrderStatement}. \
             Please format the extracted details as JSON in the following structure: array of all json orders with each object containing "item", "quantity" and "price" keys. Call the array 'items'.`;
 
         const prompt = ChatPromptTemplate.fromMessages([
             ['system', promptOrder]
         ]);
+
+        // We need this to compare the menu items
+        const menuNames = menuItems.map(item => item.name);
 
         // Chain creation
         const llmChain = prompt.pipe(chatModel).pipe(outputParser);
@@ -97,39 +101,49 @@ const confirmOrder = async (req, res) => {
             throw new Error("Invalid format or empty items in response.");
         }
 
-        // console.log("Cleaned response", formatResponse.items);
-
-        // Calculate the final price
-        const finalPrice = formatResponse.items.reduce((total, item) => {
-            // Check if price is a string and contains a '$', then remove it
-            return total + (item.price * item.quantity)
-        }, 0);
-        console.log(finalPrice);
-
-        // // If the finalPrice comes out to be string
-        // if (typeof(finalPrice) === 'string'){
-        //     finalPrice = parseInt(finalPrice);
-        // }
-
-        // Save to the database
-        // Create a new Order document
-        const newOrder = new Order({
-            username: username, // Replace with the actual username logic
-            order: formatResponse.items,
-            finalPrice,
-        });
+        console.log("Cleaned response", formatResponse);
 
 
-        // console.log("Orders,", formatResponse);
+        // A check for the user who just understand the semantic approach
+        // And just try to order anything, and use semantic negation to place order
+        const unavailableItems = formatResponse.items.filter(item => !menuNames.includes(item.item));
+        if (unavailableItems.length > 0) {
+            // If any item does not match, return status false with details
+            return res.status(400).json({
+                status: false,
+                unavailableItems,
+                response: {},
+                finalPrice: 0,
+            });
+        }
+        else {
+            // Calculate the final price
+            const finalPrice = formatResponse.items.reduce((total, item) => {
+                // Check if price is a string and contains a '$', then remove it
+                return total + (item.price * item.quantity)
+            }, 0);
+            console.log(finalPrice);
 
-        // // Save the newOrder document to the database
-        const savedOrder = await newOrder.save();
-        console.log("Saved order details:", savedOrder);
+            // // If the finalPrice comes out to be string
+            // if (typeof(finalPrice) === 'string'){
+            //     finalPrice = parseInt(finalPrice);
+            // }
 
-        // , savedOrder  , finalPrice
-        // response: { formatResponse },
-        res.status(200).json({ response: { formatResponse }, finalPrice });
-        // res.json(response)
+            // Save to the database
+            // Create a new Order document
+            const newOrder = new Order({
+                username: username, // Replace with the actual username logic
+                order: formatResponse.items,
+                finalPrice,
+            });
+
+
+            // Save the newOrder document to the database
+            const savedOrder = await newOrder.save();
+            // console.log("Saved order details:", savedOrder);
+            res.status(200).json({ status: true, response: { formatResponse }, finalPrice });
+        }
+
 
     } catch (error) {
         console.log(error);
@@ -166,17 +180,19 @@ const chatOrder = async (req, res) => {
         })
 
         status = responseStatus.choices[0].message.content;
+        status = status.toLowerCase();
 
         if (status === 'end') {
             history.push(["user", userPrompt]);
-            history.push(["system", "Summarize the order as item, quantity and price of items and end the conversation."]);
-
+            // Adjusting the system prompt with specific instructions
+            const summaryPrompt = `You're now going to summarize the order based on the conversation. It's crucial to use the exact names from the menu: ${menuItems.map(item => item.name).join(", ")}. Refer to these items by their specific names and match with the order, when summarizing the order. Please provide the summary as item, quantity, and price of each item and then end the conversation.`;
+            history.push(["system", summaryPrompt]);
             const prompt = ChatPromptTemplate.fromMessages(history);
 
             // Chain creation
             const llmChain = prompt.pipe(chatModel).pipe(outputParser);
             const response = await llmChain.invoke({ input: userPrompt });
-            // console.log("When the convo ends: ", response);
+            console.log("When the convo ends: ", response);
             // Empty the conversation
             history = [];
             console.log(status)
@@ -191,7 +207,10 @@ const chatOrder = async (req, res) => {
             } else {
                 // Your name is Order LLM and you help people in ordering food from the menu:" + menuDescription + "You are developed by Mayank Kumar.
                 const firstTimeGreet = "Hello! Welcome to our restaurant. How can I assist you today?Our menu includes:" + menuDescription + ".Please let me know if you need any help with your order. What would you like to have today?";
-                history.push(["system", "Your name is Order LLM and you are a professional waiter, you help people in ordering food from the menu, and the menu is" + menuDescription + ". Greet people with the greet" + firstTimeGreet + "Stick to the conversation and just try to finalize order, don't ask for mode of payment. You are developed by Mayank Kumar. "])
+                history.push([
+                    "system",
+                    `Your name is Order LLM, and you are a professional waiter. Greet people with: ${firstTimeGreet}. Help people in ordering food directly from the menu. The menu items are specifically named as follows: ${menuItems.map(item => item.name).join(", ")}, and understand that we can fulfill orders for multiple quantities of these items. Please make sure to use these exact names when referencing menu items in your responses. If a user requests an item that is not on the menu, politely inform them that the item is not available and ask them to choose from the menu items. Focus on helping to finalize the order, and do not ask for the mode of payment. You are developed by Mayank Kumar.`
+                ]);
                 history.push(["user", userPrompt]);
             }
 
