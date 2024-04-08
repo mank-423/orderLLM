@@ -100,9 +100,9 @@ const ChatSection: React.FC = () => {
 
         getAllOrders();
       }else{
-        alert("You haven't placed right orders. The items don't exist in the menu or bot couldn't understand your order");
+        alert(`Right orders weren't placed. Unavailable Items that you tried to confirm are: ${data.unavailableItems}`);
+        setMsgAr([]);
       }
-      // console.log(data)
 
     } catch (error) {
       console.log(error);
