@@ -17,7 +17,7 @@ const imageMap: Record<number, string> = {
 
 const StepCard: React.FC<StepCardProps> = ({ stepNumber, title, description }) => {
   return (
-    <div className="flex xl:flex-row lg:flex-row md:flex-row flex-col items-center gap-10 justify-center xl:w-full lg:w-full md:w-full w-[230px] overflow-hidden shadow-lg py-5 border rounded-2xl bg-[#484848] transition-transform transform hover:scale-105 hover:shadow-2xl mb-4 font-dm-sans">
+    <div className="flex xl:flex-row lg:flex-row md:flex-row flex-col items-center gap-10 justify-center xl:w-full lg:w-full md:w-full w-[250px] overflow-hidden shadow-lg py-5 border rounded-2xl bg-[#484848] transition-transform transform hover:scale-105 hover:shadow-2xl mb-4 font-dm-sans">
       <img className="h-48 w-48 md:w-auto object-contain" src={imageMap[stepNumber]} alt={`Step ${stepNumber}`} />
       <div className='p-4'>
         <div className="text-white text-2xl mb-2">
