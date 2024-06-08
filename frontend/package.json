@@ -15,8 +15,10 @@
     "react": "^17.0.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^17.0.1",
+    "react-feather": "^2.0.10",
     "react-feather-icon": "^0.0.5",
     "react-gravatar": "^2.6.3",
+    "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.22.1",
     "react-spinners": "^0.13.8"
   },
