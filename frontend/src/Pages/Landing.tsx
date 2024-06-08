@@ -202,6 +202,7 @@ const Landing = () => {
           <br />
           <div className="flex justify-center items-center xl:hidden lg:hidden md:hidden">
             <button
+              onClick={() => { navigate(location.pathname === '/auth' ? '/' : '/auth') }}
               className="bg-[#F27B35] text-white py-4 px-8 rounded-lg transition duration-300 hover:bg-[#F27B35]/80 focus:outline-none font-bold text-lg custom-border-value"
             >
               Try it out!
