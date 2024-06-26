@@ -26,7 +26,7 @@ const Landing = () => {
       {/* Logo and heading */}
       <section className="relative bg-gray-600">
         <div className="relative flex justify-center items-center">
-          <div className="flex flex-col absolute top-20 z-30 justify-center items-center text-center md:text-left bg-gray-600 bg-opacity-50 p-8 rounded-md">
+          <div className="flex flex-col absolute top-36 z-30 justify-center items-center text-center md:text-left bg-gray-600 bg-opacity-50 p-8 rounded-md">
             <h1 className="text-white font-medium text-6xl md:text-7xl lg:text-9xl mb-4">Order LLM</h1>
             <p className="text-white text-md md:text-xl lg:text-2xl mb-0">Effortless ordering, no lines attached!</p>
           </div>
